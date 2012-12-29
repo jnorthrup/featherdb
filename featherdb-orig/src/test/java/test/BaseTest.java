@@ -33,11 +33,6 @@ public class BaseTest {
 	static public void destroy() {
 		if (db!=null) {
 			db.shutdown();
-//			try {
-//				backend.deleteDatabase("foodb");
-//			} catch (BackendException e) {
-//				e.printStackTrace();
-//			}
 		}
 	}
 }

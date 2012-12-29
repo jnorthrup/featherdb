@@ -1,22 +1,21 @@
 package test;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.junit.Test;
-
 import com.fourspaces.featherdb.backend.BackendException;
 import com.fourspaces.featherdb.document.Document;
 import com.fourspaces.featherdb.document.DocumentCreationException;
 import com.fourspaces.featherdb.document.JSONDocument;
-import com.fourspaces.featherdb.views.ViewManager;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.junit.Test;
+
+import static com.fourspaces.featherdb.views.ViewManager.DEFAULT_FUNCTION_NAME;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class AllDocsViewTest extends BaseTest{
 	@Test
 	public void testAllDocs() {
-		JSONObject json = db.getViewManager().getViewResults("foodb", "_all_docs", ViewManager.DEFAULT_FUNCTION_NAME);
+		JSONObject json = db.getViewManager().getViewResults("foodb", "_all_docs", DEFAULT_FUNCTION_NAME);
 		System.out.println(json.toString(2));
 		JSONArray  ar = json.getJSONArray("rows");
 		
@@ -36,7 +35,7 @@ public class AllDocsViewTest extends BaseTest{
 			e.printStackTrace();
 		}
 		assertNotNull(newdoc);
-		JSONObject json2 = db.getViewManager().getViewResults("foodb", "_all_docs", ViewManager.DEFAULT_FUNCTION_NAME);
+		JSONObject json2 = db.getViewManager().getViewResults("foodb", "_all_docs", DEFAULT_FUNCTION_NAME);
 		boolean found=false;
 		ar = json2.getJSONArray("rows");
 		for (int i=0; i< ar.length();i++) {

@@ -12,6 +12,8 @@ import org.mortbay.jetty.nio.SelectChannelConnector;
 import com.fourspaces.featherdb.FeatherDB;
 import com.fourspaces.featherdb.utils.Logger;
 
+import java.util.concurrent.TimeUnit;
+
 public class HTTPDServer extends Server {
 	
 	protected Server server = null;
@@ -42,8 +44,12 @@ public class HTTPDServer extends Server {
 		context.setHandler(handlers);
 		
 		try {
-			server.start();
-		} catch (Exception e) {
+            if (server.isStarted() || server.isStarting() || server.isRunning()){
+                server.destroy();
+                TimeUnit.SECONDS.sleep(30);
+            }
+            server.start();
+        } catch (Exception e) {
 			Logger.get(getClass()).error(e,"Error starting Jetty");
 			throw e;
 		}
@@ -52,7 +58,7 @@ public class HTTPDServer extends Server {
 	public void shutdown() {
 		try {
 			Logger.get(getClass()).debug("Stopping Jetty");
-			server.stop();
+			if(server.isStarted())server.stop();
 		} catch (Exception e) {
 			Logger.get(getClass()).error(e,"Error shutting down Jetty");
 		}

@@ -1,7 +1,5 @@
 package com.fourspaces.featherdb;
 
-import java.util.Properties;
-
 import com.fourspaces.featherdb.auth.Authentication;
 import com.fourspaces.featherdb.backend.Backend;
 import com.fourspaces.featherdb.backend.BackendException;
@@ -10,6 +8,8 @@ import com.fourspaces.featherdb.httpd.HTTPDServer;
 import com.fourspaces.featherdb.utils.Logger;
 import com.fourspaces.featherdb.views.ViewException;
 import com.fourspaces.featherdb.views.ViewManager;
+
+import java.util.*;
 
 public class FeatherDB {
 	public static final String USERS_DB = "_users";
@@ -22,33 +22,41 @@ public class FeatherDB {
 	protected final Authentication auth;
 	protected final ViewManager viewManager;
 
-	protected final Properties properties;
-	
-	public FeatherDB () {
-		this.properties = FeatherDBProperties.getProperties();
-		this.backend = buildBackend();
+    protected final PropertyResourceBundle properties2 = (PropertyResourceBundle) PropertyResourceBundle.getBundle(FeatherDBProperties.DEFAULT_CONFIG_FILE);
+
+    private final Properties properties = new Properties();
+    {
+        Enumeration<String> keys = properties2.getKeys();
+        while (keys.hasMoreElements()) {
+            String s = keys.nextElement();
+            this.properties.put(s, properties2.getString(s));
+        }
+
+    }
+
+    public FeatherDB () {
+        this.backend = buildBackend();
 		this.auth = buildAuthentication();
 		this.httpd = buildHTTPD();
 		this.viewManager = buildViewManager();
 	}
-	public FeatherDB (Backend backend) {
-		this.properties = FeatherDBProperties.getProperties();
-		this.backend=backend;
+
+    public FeatherDB (Backend backend) {
+
+        this.backend=backend;
 		this.auth = buildAuthentication();
 		this.httpd = buildHTTPD();
 		this.viewManager = buildViewManager();
 	}
 	public FeatherDB (Properties properties) {
-		this.properties = FeatherDBProperties.getProperties();
-		this.properties.putAll(properties);
+        this.properties.putAll(properties);
 		this.backend = buildBackend();
 		this.auth = buildAuthentication();
 		this.httpd = buildHTTPD();
 		this.viewManager = buildViewManager();
 	}
 	public FeatherDB (Backend backend, Properties properties) {
-		this.properties = FeatherDBProperties.getProperties();
-		this.properties.putAll(properties);
+        this.properties.putAll(properties);
 		this.backend=backend;
 		this.auth = buildAuthentication();
 		this.httpd = buildHTTPD();
